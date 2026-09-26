@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM Moderno | Panel de Gestión</title>
-    <!-- Fuentes modernas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
@@ -16,25 +14,16 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
-                    colors: {
-                        brand: { blue: '#0033a0', cyan: '#00a1e0', dark: '#0f172a', light: '#f8fafc' }
-                    },
+                    colors: { brand: { blue: '#0033a0', cyan: '#00a1e0', dark: '#0f172a', light: '#f8fafc' } },
                     boxShadow: { 'floating': '0 30px 60px -20px rgba(0,51,160,0.2)' }
                 }
             }
         }
     </script>
     <style>
-        body {
-            background: linear-gradient(135deg, #0033a0 0%, #00a1e0 100%);
-            background-attachment: fixed;
-        }
-        .input-modern {
-            @apply w-full bg-slate-50 border-0 rounded-2xl px-5 py-3.5 text-gray-800 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:ring-2 focus:ring-brand-cyan focus:bg-white transition-all duration-300;
-        }
-        .label-modern {
-            @apply block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1;
-        }
+        body { background: linear-gradient(135deg, #0033a0 0%, #00a1e0 100%); background-attachment: fixed; }
+        .input-modern { @apply w-full bg-slate-50 border-0 rounded-2xl px-5 py-3.5 text-gray-800 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:ring-2 focus:ring-brand-cyan focus:bg-white transition-all duration-300; }
+        .label-modern { @apply block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1; }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -43,135 +32,148 @@
 </head>
 <body class="font-sans antialiased min-h-screen text-slate-800 p-4 md:p-8 flex items-center justify-center">
 
-    <div class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-floating overflow-hidden relative fade-in">
+    <div class="max-w-6xl w-full bg-white rounded-[2.5rem] shadow-floating overflow-hidden relative fade-in">
         
         <!-- Header / Pestañas -->
         <div class="px-8 pt-8 pb-4 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center bg-white/50 backdrop-blur-xl sticky top-0 z-10 gap-4">
             <div>
-                <h1 class="text-3xl font-extrabold text-brand-dark tracking-tight">Registro</h1>
-                <p class="text-sm font-medium text-slate-400 mt-1">Gestión de potenciales clientes</p>
+                <h1 class="text-3xl font-extrabold text-brand-dark tracking-tight">CRM Central</h1>
+                <p class="text-sm font-medium text-slate-400 mt-1">Gestión de oportunidades y clientes</p>
             </div>
-            <div class="flex space-x-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto">
-                <button onclick="switchTab('registro')" id="tab-registro" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-white text-brand-blue shadow-sm">
-                    Formulario
+            <div class="flex space-x-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto overflow-x-auto">
+                <button onclick="switchTab('potenciales')" id="tab-potenciales" class="flex-1 md:flex-none px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-white text-brand-blue shadow-sm whitespace-nowrap">
+                    Potenciales
                 </button>
-                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-brand-blue">
+                <button onclick="switchTab('registro')" id="tab-registro" class="flex-1 md:flex-none px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-brand-blue whitespace-nowrap">
+                    Formulario Cliente
+                </button>
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 md:flex-none px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-brand-blue whitespace-nowrap">
                     Dashboard
                 </button>
             </div>
         </div>
 
-        <!-- Alerta de Edición -->
+        <!-- Alertas Flotantes -->
         <div id="alertaEdicion" class="hidden bg-brand-cyan/10 border-l-4 border-brand-cyan p-4 mx-8 mt-6 rounded-r-2xl">
             <div class="flex items-center">
                 <svg class="h-5 w-5 text-brand-cyan mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                <p class="text-sm font-bold text-brand-blue">Modo Edición Activado.</p>
+                <p class="text-sm font-bold text-brand-blue" id="textoAlertaEdicion">Modo Edición Activado.</p>
                 <button type="button" onclick="cancelarEdicion()" class="ml-auto text-xs font-bold text-slate-500 hover:text-brand-blue uppercase tracking-wider flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    Cancelar
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Cancelar
                 </button>
             </div>
         </div>
 
-        <!-- PESTAÑA REGISTRO -->
-        <div id="content-registro" class="p-8 fade-in">
+        <!-- PESTAÑA: POTENCIALES -->
+        <div id="content-potenciales" class="p-8 fade-in">
+            <!-- Formulario Nuevo Potencial -->
+            <form id="formPotencial" class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 mb-8 space-y-6">
+                <h2 class="text-lg font-extrabold text-brand-dark">Añadir Nuevo Potencial</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div>
+                        <label class="label-modern">Fecha Reporte</label>
+                        <input type="date" id="potFecha" required class="input-modern bg-white">
+                    </div>
+                    <div>
+                        <label class="label-modern">Cédula *</label>
+                        <input type="number" id="potCedula" required class="input-modern bg-white">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="label-modern">Nombre Completo *</label>
+                        <input type="text" id="potNombre" required class="input-modern bg-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div>
+                        <label class="label-modern">Teléfono *</label>
+                        <input type="number" id="potTelefono" required class="input-modern bg-white">
+                    </div>
+                    <div>
+                        <label class="label-modern">Empresa *</label>
+                        <select id="potEmpresa" required class="input-modern bg-white"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="label-modern">Notas iniciales</label>
+                        <input type="text" id="potNotas" class="input-modern bg-white">
+                    </div>
+                </div>
+                <button type="submit" id="btnPotencial" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl transition-all flex justify-center items-center">
+                    <span id="txtBtnPotencial">Guardar Potencial</span>
+                </button>
+            </form>
+
+            <!-- Tabla de Potenciales -->
+            <div class="overflow-x-auto rounded-[1.5rem] border border-slate-100 shadow-sm">
+                <table class="min-w-full divide-y divide-slate-100">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">Fecha</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">Cliente</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">Estado</th>
+                            <th class="px-6 py-4 text-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPotenciales" class="bg-white divide-y divide-slate-50">
+                        <tr><td colspan="4" class="px-6 py-8 text-center text-sm text-slate-400">Cargando potenciales...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PESTAÑA: FORMULARIO CLIENTE (Original adaptado) -->
+        <div id="content-registro" class="hidden p-8 fade-in">
             <form id="leadForm" class="space-y-6">
+                <!-- Secciones idénticas a tu código anterior -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="label-modern">ID Consulta</label>
-                        <input type="text" id="idConsulta" class="input-modern bg-slate-100 text-slate-400 font-medium" readonly>
-                    </div>
-                    <div>
-                        <label class="label-modern">Fecha Registro</label>
-                        <input type="date" id="fechaRegistro" class="input-modern bg-slate-100 text-slate-400 font-medium" readonly>
-                    </div>
+                    <div><label class="label-modern">ID Consulta</label><input type="text" id="idConsulta" class="input-modern bg-slate-100 text-slate-400 font-medium" readonly></div>
+                    <div><label class="label-modern">Fecha Registro</label><input type="date" id="fechaRegistro" class="input-modern bg-slate-100 text-slate-400 font-medium" readonly></div>
                     <div>
                         <label class="label-modern text-brand-blue">Cédula *</label>
                         <div class="relative">
-                            <input type="number" id="cedula" required class="input-modern pr-14" placeholder="Ej. 1058139461">
-                            <button type="button" onclick="buscarPorCedula()" class="absolute inset-y-1.5 right-1.5 bg-brand-blue hover:bg-brand-cyan text-white p-2 rounded-xl transition-colors shadow-md" title="Buscar y editar por cédula">
+                            <input type="number" id="cedula" required class="input-modern pr-14">
+                            <button type="button" onclick="buscarPorCedula()" class="absolute inset-y-1.5 right-1.5 bg-brand-blue hover:bg-brand-cyan text-white p-2 rounded-xl transition-colors shadow-md">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="label-modern">Nombre Completo *</label>
-                    <input type="text" id="nombre" required class="input-modern" placeholder="Ej. Nicol Dahianna Ortíz Ramirez">
-                </div>
+                <div><label class="label-modern">Nombre Completo *</label><input type="text" id="nombre" required class="input-modern"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
-                    <div>
-                        <label class="label-modern">Número POPC *</label>
-                        <input type="text" id="numPOPC" required class="input-modern bg-white">
-                    </div>
-                    <div>
-                        <label class="label-modern">Puntaje CIFIN *</label>
-                        <input type="number" id="puntajeCIFIN" required class="input-modern bg-white">
-                    </div>
+                    <div><label class="label-modern">Número POPC *</label><input type="text" id="numPOPC" required class="input-modern bg-white"></div>
+                    <div><label class="label-modern">Puntaje CIFIN *</label><input type="number" id="puntajeCIFIN" required class="input-modern bg-white"></div>
                     <div>
                         <label class="label-modern">Validación CIFIN *</label>
                         <select id="validacionCIFIN" required class="input-modern bg-white">
-                            <option value="">Seleccionar...</option>
-                            <option value="Cumple">Cumple</option>
-                            <option value="No cumple">No cumple</option>
-                            <option value="Cumple con pendiente">Cumple con pendiente</option>
-                            <option value="PEPs">PEPs</option>
+                            <option value="">Seleccionar...</option><option value="Cumple">Cumple</option><option value="No cumple">No cumple</option>
+                            <option value="Cumple con pendiente">Cumple con pendiente</option><option value="PEPs">PEPs</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="label-modern">Empresa *</label>
-                        <select id="empresa" required class="input-modern">
-                            <option value="">Cargando empresas...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="label-modern">Sector *</label>
-                        <select id="sector" required class="input-modern">
-                            <option value="">Seleccionar...</option>
-                            <option value="Público">Público</option>
-                            <option value="Privado">Privado</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="label-modern">Teléfono *</label>
-                        <input type="number" id="telefono" required class="input-modern" placeholder="Ej. 3007358997">
-                    </div>
+                    <div><label class="label-modern">Empresa *</label><select id="empresa" required class="input-modern"><option value="">Cargando...</option></select></div>
+                    <div><label class="label-modern">Sector *</label><select id="sector" required class="input-modern"><option value="">Seleccionar...</option><option value="Público">Público</option><option value="Privado">Privado</option></select></div>
+                    <div><label class="label-modern">Teléfono *</label><input type="number" id="telefono" required class="input-modern"></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="label-modern"># OPC *</label>
-                        <input type="text" id="numOPC" required class="input-modern">
-                    </div>
+                    <div><label class="label-modern"># OPC *</label><input type="text" id="numOPC" required class="input-modern"></div>
                     <div>
                         <label class="label-modern">Estado *</label>
                         <select id="estado" required class="input-modern">
-                            <option value="">Seleccionar...</option>
-                            <option value="Recuperar">Recuperar</option>
-                            <option value="Radicado">Radicado</option>
-                            <option value="Reportado">Reportado</option>
-                            <option value="Sin capacidad">Sin capacidad</option>
-                            <option value="Pendiente por Radicar">Pendiente por Radicar</option>
+                            <option value="">Seleccionar...</option><option value="Recuperar">Recuperar</option><option value="Radicado">Radicado</option>
+                            <option value="Reportado">Reportado</option><option value="Sin capacidad">Sin capacidad</option><option value="Pendiente por Radicar">Pendiente por Radicar</option>
                         </select>
                     </div>
-                    <div id="divRecuperacion" class="hidden">
-                        <label class="label-modern text-amber-500">Fecha Recuperación *</label>
-                        <input type="date" id="fechaRecuperacion" class="input-modern bg-amber-50 border border-amber-200">
-                    </div>
+                    <div id="divRecuperacion" class="hidden"><label class="label-modern text-amber-500">Fecha Recuperación *</label><input type="date" id="fechaRecuperacion" class="input-modern bg-amber-50 border border-amber-200"></div>
                 </div>
 
-                <div>
-                    <label class="label-modern">Notas Adicionales</label>
-                    <textarea id="notas" rows="3" class="input-modern resize-none" placeholder="Observaciones..."></textarea>
-                </div>
+                <div><label class="label-modern">Notas Adicionales</label><textarea id="notas" rows="3" class="input-modern resize-none"></textarea></div>
 
                 <div class="pt-6">
-                    <button type="submit" id="btnSubmit" class="w-full bg-brand-dark hover:bg-brand-blue text-white font-bold text-lg py-4 rounded-2xl shadow-[0_10px_20px_-10px_rgba(0,51,160,0.5)] transition-all duration-300 flex justify-center items-center">
+                    <button type="submit" id="btnSubmit" class="w-full bg-brand-dark hover:bg-brand-blue text-white font-bold text-lg py-4 rounded-2xl transition-all flex justify-center items-center shadow-[0_10px_20px_-10px_rgba(0,51,160,0.5)]">
                         <span id="btnText">Guardar Registro</span>
                         <svg id="btnSpinner" class="hidden animate-spin ml-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     </button>
@@ -180,23 +182,17 @@
             </form>
         </div>
 
-        <!-- PESTAÑA DASHBOARD -->
+        <!-- PESTAÑA: DASHBOARD -->
         <div id="content-dashboard" class="hidden p-8 fade-in">
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-slate-50 p-4 rounded-2xl">
-                <p class="text-sm font-semibold text-slate-500">Visualiza y edita los registros guardados.</p>
+                <p class="text-sm font-semibold text-slate-500">Visualiza y edita los clientes.</p>
                 <div class="mt-4 md:mt-0 flex items-center bg-white p-1 rounded-xl shadow-sm">
                     <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mx-3">Filtrar</label>
-                    <select id="filtroEstado" onchange="renderizarTabla()" class="border-0 bg-transparent py-2 pl-2 pr-8 text-sm font-bold text-brand-dark focus:ring-0 cursor-pointer">
-                        <option value="Todos">Todos</option>
-                        <option value="Recuperar">Recuperar (Pendientes)</option>
-                        <option value="Radicado">Radicado</option>
-                        <option value="Reportado">Reportado</option>
-                        <option value="Pendiente por Radicar">Pendiente por Radicar</option>
-                        <option value="Sin capacidad">Sin capacidad</option>
+                    <select id="filtroEstado" onchange="renderizarTablaDashboard()" class="border-0 bg-transparent py-2 pl-2 pr-8 text-sm font-bold text-brand-dark focus:ring-0">
+                        <option value="Todos">Todos</option><option value="Recuperar">Recuperar (Pendientes)</option><option value="Radicado">Radicado</option><option value="Reportado">Reportado</option><option value="Pendiente por Radicar">Pendiente por Radicar</option><option value="Sin capacidad">Sin capacidad</option>
                     </select>
                 </div>
             </div>
-
             <div class="overflow-x-auto rounded-[2rem] border border-slate-100 shadow-sm">
                 <table class="min-w-full divide-y divide-slate-100">
                     <thead class="bg-slate-50">
@@ -208,24 +204,25 @@
                             <th class="px-6 py-4 text-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">Acción</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaCuerpo" class="bg-white divide-y divide-slate-50">
-                        <tr><td colspan="5" class="px-6 py-12 text-center text-sm text-slate-400 font-medium">Cargando información...</td></tr>
-                    </tbody>
+                    <tbody id="tablaCuerpo" class="bg-white divide-y divide-slate-50"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- ETIQUETA SCRIPT (VITAL) -->
+    <!-- SCRIPTS -->
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXKBS057EN36CPOpa07SyojvGl6wWLVWmfNzKjzAbAD92RH_FtSZpYFpB5e2yvEwd-gg/exec';
         let datosDashboard = [];
+        let datosPotenciales = [];
         let currentRowNumber = null;
+        let prospectoEnMaterializacion = null; // Guarda la cédula si estamos convirtiendo un prospecto
 
         window.onload = () => {
-            const today = new Date();
-            today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-            document.getElementById('fechaRegistro').value = today.toISOString().slice(0, 10);
+            const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+            const hoyStr = today.toISOString().slice(0, 10);
+            document.getElementById('fechaRegistro').value = hoyStr;
+            document.getElementById('potFecha').value = hoyStr;
             document.getElementById('idConsulta').value = "Calculando ID...";
             cargarDatosBackend();
         };
@@ -233,26 +230,15 @@
         function generarID(registrosExistentes) {
             const date = new Date();
             const prefix = date.getFullYear().toString() + String(date.getMonth() + 1).padStart(2, '0') + String(date.getDate()).padStart(2, '0');
-            
-            if (!registrosExistentes || registrosExistentes.length === 0) {
-                return `${prefix}-01`;
-            }
-
+            if (!registrosExistentes || registrosExistentes.length === 0) return `${prefix}-01`;
             let maxConsecutivo = 0;
             registrosExistentes.forEach(row => {
                 if (row.idConsulta && row.idConsulta.startsWith(prefix)) {
-                    let parts = row.idConsulta.split('-');
-                    if (parts.length === 2) {
-                        let num = parseInt(parts[1], 10);
-                        if (!isNaN(num) && num > maxConsecutivo) {
-                            maxConsecutivo = num;
-                        }
-                    }
+                    let num = parseInt(row.idConsulta.split('-')[1], 10);
+                    if (!isNaN(num) && num > maxConsecutivo) maxConsecutivo = num;
                 }
             });
-
-            const nextConsecutivo = maxConsecutivo + 1;
-            return `${prefix}-${String(nextConsecutivo).padStart(2, '0')}`;
+            return `${prefix}-${String(maxConsecutivo + 1).padStart(2, '0')}`;
         }
 
         async function cargarDatosBackend() {
@@ -260,53 +246,116 @@
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
                 
-                const selectEmpresa = document.getElementById('empresa');
-                selectEmpresa.innerHTML = '<option value="">Seleccione una empresa</option>';
-                if(data.empresas) {
-                    data.empresas.forEach(emp => {
-                        let opt = document.createElement('option');
-                        opt.value = emp; opt.textContent = emp;
-                        selectEmpresa.appendChild(opt);
+                const selects = ['empresa', 'potEmpresa'];
+                selects.forEach(id => {
+                    const el = document.getElementById(id);
+                    el.innerHTML = '<option value="">Seleccione una empresa</option>';
+                    if(data.empresas) data.empresas.forEach(emp => {
+                        let opt = document.createElement('option'); opt.value = emp; opt.textContent = emp; el.appendChild(opt);
                     });
-                }
+                });
+
                 if(data.registros) {
-                    if(!currentRowNumber) {
-                        document.getElementById('idConsulta').value = generarID(data.registros);
-                    }
+                    if(!currentRowNumber) document.getElementById('idConsulta').value = generarID(data.registros);
                     datosDashboard = data.registros.reverse(); 
-                    renderizarTabla();
+                    renderizarTablaDashboard();
                 }
-            } catch (error) {
-                console.error("Error cargando datos");
-                if(!currentRowNumber) document.getElementById('idConsulta').value = "Error al generar ID";
-            }
+                
+                if(data.potenciales) {
+                    datosPotenciales = data.potenciales.reverse();
+                    renderizarTablaPotenciales();
+                }
+            } catch (error) { console.error("Error cargando datos"); }
         }
 
         function switchTab(tabId) {
-            document.getElementById('content-registro').classList.add('hidden');
-            document.getElementById('content-dashboard').classList.add('hidden');
-            document.getElementById('tab-registro').className = 'flex-1 md:flex-none px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-brand-blue';
-            document.getElementById('tab-dashboard').className = 'flex-1 md:flex-none px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-brand-blue';
-            
+            ['potenciales', 'registro', 'dashboard'].forEach(id => {
+                document.getElementById(`content-${id}`).classList.add('hidden');
+                document.getElementById(`tab-${id}`).className = 'flex-1 md:flex-none px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-brand-blue whitespace-nowrap';
+            });
             document.getElementById(`content-${tabId}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabId}`).className = 'flex-1 md:flex-none px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-white text-brand-blue shadow-sm';
-            
-            if(tabId === 'dashboard') cargarDatosBackend();
+            document.getElementById(`tab-${tabId}`).className = 'flex-1 md:flex-none px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-white text-brand-blue shadow-sm whitespace-nowrap';
+            if(tabId !== 'registro') cargarDatosBackend();
         }
 
         document.getElementById('estado').addEventListener('change', function() {
-            const divRecuperacion = document.getElementById('divRecuperacion');
-            const inputRecuperacion = document.getElementById('fechaRecuperacion');
             if (this.value === 'Recuperar') {
-                divRecuperacion.classList.remove('hidden');
-                inputRecuperacion.required = true;
+                document.getElementById('divRecuperacion').classList.remove('hidden');
+                document.getElementById('fechaRecuperacion').required = true;
             } else {
-                divRecuperacion.classList.add('hidden');
-                inputRecuperacion.required = false;
-                inputRecuperacion.value = '';
+                document.getElementById('divRecuperacion').classList.add('hidden');
+                document.getElementById('fechaRecuperacion').required = false;
+                document.getElementById('fechaRecuperacion').value = '';
             }
         });
 
+        // --- LÓGICA DE POTENCIALES ---
+        document.getElementById('formPotencial').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnPotencial');
+            const txt = document.getElementById('txtBtnPotencial');
+            btn.disabled = true; txt.textContent = "Guardando...";
+            
+            const formData = {
+                action: 'create_potencial',
+                fechaReporte: document.getElementById('potFecha').value,
+                cedula: document.getElementById('potCedula').value,
+                nombre: document.getElementById('potNombre').value,
+                telefono: document.getElementById('potTelefono').value,
+                empresa: document.getElementById('potEmpresa').value,
+                notas: document.getElementById('potNotas').value
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(formData) });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    document.getElementById('formPotencial').reset();
+                    cargarDatosBackend();
+                }
+            } catch (error) { alert("Error al guardar el potencial."); }
+            finally { btn.disabled = false; txt.textContent = "Guardar Potencial"; }
+        });
+
+        function materializarPotencial(cedula, nombre, telefono, empresa, notas) {
+            prospectoEnMaterializacion = cedula;
+            document.getElementById('cedula').value = cedula;
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('telefono').value = telefono;
+            document.getElementById('empresa').value = empresa;
+            document.getElementById('notas').value = notas + " [Materializado]";
+            
+            document.getElementById('alertaEdicion').classList.remove('hidden');
+            document.getElementById('textoAlertaEdicion').textContent = "Modo Conversión: Completando datos para convertir potencial en Cliente.";
+            
+            switchTab('registro');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderizarTablaPotenciales() {
+            const tbody = document.getElementById('tablaPotenciales');
+            tbody.innerHTML = '';
+            if (datosPotenciales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-sm text-slate-400">No hay potenciales registrados.</td></tr>';
+                return;
+            }
+            datosPotenciales.forEach(row => {
+                let badge = row.estado === 'Materializado' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+                let btnHtml = row.estado === 'Pendiente' 
+                    ? `<button onclick="materializarPotencial('${row.cedula}', '${row.nombre}', '${row.telefono}', '${row.empresa}', '${row.notas}')" class="inline-flex items-center px-3 py-1.5 bg-brand-cyan hover:bg-brand-blue text-white font-bold text-[10px] uppercase rounded-lg transition-all shadow-sm"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>Materializar</button>`
+                    : `<span class="text-xs font-bold text-slate-300">Convertido</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50">
+                        <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-500">${row.fechaReporte}</td>
+                        <td class="px-6 py-4 whitespace-nowrap"><div class="text-sm font-bold text-slate-800">${row.nombre}</div><div class="text-xs text-slate-400">CC: ${row.cedula} | ${row.empresa}</div></td>
+                        <td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 text-[10px] font-bold rounded-xl ${badge}">${row.estado}</span></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">${btnHtml}</td>
+                    </tr>`;
+            });
+        }
+
+        // --- LÓGICA PRINCIPAL (REGISTRO Y DASHBOARD) ---
         function editarDesdeDashboard(cedula) {
             document.getElementById('cedula').value = cedula;
             switchTab('registro');
@@ -315,8 +364,7 @@
 
         async function buscarPorCedula() {
             const cedulaBuscar = document.getElementById('cedula').value;
-            if(!cedulaBuscar) return alert("Ingrese una cédula para buscar.");
-            
+            if(!cedulaBuscar) return alert("Ingrese una cédula.");
             const btnBuscar = document.querySelector('button[onclick="buscarPorCedula()"]');
             const iconOriginal = btnBuscar.innerHTML;
             btnBuscar.innerHTML = `<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
@@ -324,92 +372,59 @@
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'search', cedula: cedulaBuscar }) });
                 const result = await response.json();
-                
                 if(result.status === 'success' && result.data) {
                     const d = result.data;
                     document.getElementById('idConsulta').value = d.idConsulta;
                     document.getElementById('fechaRegistro').value = d.fechaRegistro ? d.fechaRegistro.split('T')[0] : '';
-                    document.getElementById('numPOPC').value = d.numPOPC;
-                    document.getElementById('puntajeCIFIN').value = d.puntajeCIFIN;
-                    document.getElementById('validacionCIFIN').value = d.validacionCIFIN;
-                    document.getElementById('empresa').value = d.empresa;
-                    document.getElementById('sector').value = d.sector;
-                    document.getElementById('nombre').value = d.nombre;
-                    document.getElementById('telefono').value = d.telefono;
-                    document.getElementById('numOPC').value = d.numOPC;
-                    document.getElementById('notas').value = d.notas;
-                    document.getElementById('estado').value = d.estado;
+                    document.getElementById('numPOPC').value = d.numPOPC; document.getElementById('puntajeCIFIN').value = d.puntajeCIFIN;
+                    document.getElementById('validacionCIFIN').value = d.validacionCIFIN; document.getElementById('empresa').value = d.empresa;
+                    document.getElementById('sector').value = d.sector; document.getElementById('nombre').value = d.nombre;
+                    document.getElementById('telefono').value = d.telefono; document.getElementById('numOPC').value = d.numOPC;
+                    document.getElementById('notas').value = d.notas; document.getElementById('estado').value = d.estado;
                     
                     if(d.estado === 'Recuperar') {
                         document.getElementById('divRecuperacion').classList.remove('hidden');
                         document.getElementById('fechaRecuperacion').required = true;
                         document.getElementById('fechaRecuperacion').value = d.fechaRecuperacion ? d.fechaRecuperacion.split('T')[0] : '';
-                    } else {
-                        document.getElementById('divRecuperacion').classList.add('hidden');
-                        document.getElementById('fechaRecuperacion').required = false;
-                        document.getElementById('fechaRecuperacion').value = '';
                     }
-
                     currentRowNumber = d.rowNumber;
+                    prospectoEnMaterializacion = null; // Reset si es edición normal
                     document.getElementById('alertaEdicion').classList.remove('hidden');
-                    const btnSubmit = document.getElementById('btnSubmit');
-                    btnSubmit.classList.remove('bg-brand-dark', 'hover:bg-brand-blue');
-                    btnSubmit.classList.add('bg-brand-cyan', 'hover:bg-blue-400');
+                    document.getElementById('textoAlertaEdicion').textContent = "Modo Edición Activado.";
                     document.getElementById('btnText').textContent = "Actualizar Registro";
-                    
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else { alert("Cédula no encontrada en la base de datos."); }
-            } catch (error) { alert("Error de conexión. Revise su internet."); } 
+                } else { alert("Cédula no encontrada."); }
+            } catch (error) { alert("Error de conexión."); } 
             finally { btnBuscar.innerHTML = iconOriginal; }
         }
 
         function cancelarEdicion() {
-            currentRowNumber = null;
+            currentRowNumber = null; prospectoEnMaterializacion = null;
             document.getElementById('leadForm').reset();
-            
-            const today = new Date();
-            today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+            const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
             document.getElementById('fechaRegistro').value = today.toISOString().slice(0, 10);
-            
             document.getElementById('idConsulta').value = generarID(datosDashboard);
-            
             document.getElementById('divRecuperacion').classList.add('hidden');
-            document.getElementById('fechaRecuperacion').required = false;
             document.getElementById('alertaEdicion').classList.add('hidden');
-            const btnSubmit = document.getElementById('btnSubmit');
-            btnSubmit.classList.remove('bg-brand-cyan', 'hover:bg-blue-400');
-            btnSubmit.classList.add('bg-brand-dark', 'hover:bg-brand-blue');
             document.getElementById('btnText').textContent = "Guardar Registro";
         }
 
         document.getElementById('leadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btnSubmit = document.getElementById('btnSubmit');
-            const btnText = document.getElementById('btnText');
-            const btnSpinner = document.getElementById('btnSpinner');
-            const feedback = document.getElementById('formFeedback');
+            const btnSubmit = document.getElementById('btnSubmit'); const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner'); const feedback = document.getElementById('formFeedback');
 
-            btnSubmit.disabled = true;
-            btnText.textContent = currentRowNumber ? "Actualizando..." : "Guardando...";
-            btnSpinner.classList.remove('hidden');
+            btnSubmit.disabled = true; btnText.textContent = "Procesando..."; btnSpinner.classList.remove('hidden');
             
             const formData = {
                 action: currentRowNumber ? 'update' : 'create',
                 rowNumber: currentRowNumber,
-                idConsulta: document.getElementById('idConsulta').value,
-                fechaRegistro: document.getElementById('fechaRegistro').value,
-                numPOPC: document.getElementById('numPOPC').value,
-                puntajeCIFIN: document.getElementById('puntajeCIFIN').value,
-                validacionCIFIN: document.getElementById('validacionCIFIN').value,
-                empresa: document.getElementById('empresa').value,
-                sector: document.getElementById('sector').value,
-                cedula: document.getElementById('cedula').value,
-                nombre: document.getElementById('nombre').value,
-                telefono: document.getElementById('telefono').value,
-                numOPC: document.getElementById('numOPC').value,
-                notas: document.getElementById('notas').value,
-                estado: document.getElementById('estado').value,
-                fechaRecuperacion: document.getElementById('fechaRecuperacion').value
+                idConsulta: document.getElementById('idConsulta').value, fechaRegistro: document.getElementById('fechaRegistro').value,
+                numPOPC: document.getElementById('numPOPC').value, puntajeCIFIN: document.getElementById('puntajeCIFIN').value,
+                validacionCIFIN: document.getElementById('validacionCIFIN').value, empresa: document.getElementById('empresa').value,
+                sector: document.getElementById('sector').value, cedula: document.getElementById('cedula').value,
+                nombre: document.getElementById('nombre').value, telefono: document.getElementById('telefono').value,
+                numOPC: document.getElementById('numOPC').value, notas: document.getElementById('notas').value,
+                estado: document.getElementById('estado').value, fechaRecuperacion: document.getElementById('fechaRecuperacion').value
             };
 
             try {
@@ -417,40 +432,37 @@
                 const result = await response.json();
 
                 if (result.status === 'success') {
+                    // Si venía de una materialización, actualizar la hoja Potenciales
+                    if (prospectoEnMaterializacion) {
+                        fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'materialize_potencial', cedula: prospectoEnMaterializacion }) });
+                    }
+                    
                     feedback.textContent = currentRowNumber ? "¡Actualizado exitosamente!" : "¡Guardado exitosamente!";
                     feedback.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 rounded-xl py-3 block fade-in";
-                    
                     cancelarEdicion();
                     cargarDatosBackend();
-                } else throw new Error("Error del servidor");
+                }
             } catch (error) {
                 feedback.textContent = "Error al guardar.";
                 feedback.className = "mt-4 text-center text-sm font-bold bg-red-100 text-red-700 rounded-xl py-3 block fade-in";
             } finally {
-                btnSubmit.disabled = false;
-                btnText.textContent = currentRowNumber ? "Actualizar Registro" : "Guardar Registro";
-                btnSpinner.classList.add('hidden');
+                btnSubmit.disabled = false; btnText.textContent = "Guardar Registro"; btnSpinner.classList.add('hidden');
                 setTimeout(() => { feedback.classList.add('hidden'); }, 4000);
             }
         });
 
-        function renderizarTabla() {
+        function renderizarTablaDashboard() {
             const tbody = document.getElementById('tablaCuerpo');
             const filtro = document.getElementById('filtroEstado').value;
             tbody.innerHTML = '';
-
             const datosFiltrados = filtro === 'Todos' ? datosDashboard : datosDashboard.filter(r => r.estado === filtro);
 
             if (datosFiltrados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-sm text-slate-400 font-medium">No hay registros para este filtro.</td></tr>';
-                return;
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-sm text-slate-400">No hay registros para este filtro.</td></tr>'; return;
             }
 
             datosFiltrados.forEach(row => {
-                let tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50/50 transition-colors";
                 const iniciales = row.nombre ? row.nombre.substring(0,2).toUpperCase() : '??';
-
                 let badgeStyle = "bg-slate-100 text-slate-600";
                 if(row.estado === "Recuperar") badgeStyle = "bg-rose-100 text-rose-700";
                 if(row.estado === "Radicado") badgeStyle = "bg-emerald-100 text-emerald-700";
@@ -460,28 +472,22 @@
                 if (row.estado === 'Recuperar' && row.fechaRecuperacion) {
                     const hoy = new Date(); hoy.setHours(0,0,0,0);
                     const rec = new Date(row.fechaRecuperacion + 'T00:00:00'); 
-                    const diffTime = rec - hoy;
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const diffDays = Math.ceil((rec - hoy) / (1000 * 60 * 60 * 24));
                     
-                    if (diffDays < 0) alertaHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-red-50 text-red-600 border border-red-200">Vencido (${Math.abs(diffDays)}d)</span>`;
-                    else if (diffDays === 0) alertaHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-500 text-white shadow-sm animate-pulse">¡Llamar Hoy!</span>`;
-                    else if (diffDays <= 3) alertaHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-800">Pronto (${diffDays}d)</span>`;
-                    else alertaHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600">A tiempo</span>`;
+                    if (diffDays < 0) alertaHTML = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-red-50 text-red-600 border border-red-200">Vencido (${Math.abs(diffDays)}d)</span>`;
+                    else if (diffDays === 0) alertaHTML = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-500 text-white animate-pulse">¡Llamar Hoy!</span>`;
+                    else if (diffDays <= 3) alertaHTML = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-800">Pronto (${diffDays}d)</span>`;
+                    else alertaHTML = `<span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600">A tiempo</span>`;
                 }
 
-                tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap"><div class="flex items-center"><div class="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-br from-brand-cyan to-brand-blue flex items-center justify-center text-white font-bold text-xs shadow-inner">${iniciales}</div><div class="ml-4"><div class="text-sm font-bold text-slate-800">${row.nombre}</div><div class="text-xs font-medium text-slate-400">CC: ${row.cedula}</div></div></div></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-600">${row.empresa}</td>
-                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-xl ${badgeStyle}">${row.estado}</span></td>
-                    <td class="px-6 py-4 whitespace-nowrap">${alertaHTML}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                        <button onclick="editarDesdeDashboard('${row.cedula}')" class="inline-flex items-center justify-center px-3 py-1.5 bg-slate-100 hover:bg-brand-cyan hover:text-white text-brand-blue font-bold text-[10px] uppercase tracking-wider rounded-lg transition-all shadow-sm">
-                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                            Editar
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50">
+                        <td class="px-6 py-4 whitespace-nowrap"><div class="flex items-center"><div class="h-10 w-10 rounded-full bg-gradient-to-br from-brand-cyan to-brand-blue flex items-center justify-center text-white font-bold text-xs shadow-inner">${iniciales}</div><div class="ml-4"><div class="text-sm font-bold text-slate-800">${row.nombre}</div><div class="text-xs text-slate-400">CC: ${row.cedula}</div></div></div></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-600">${row.empresa}</td>
+                        <td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 text-[10px] font-bold rounded-xl ${badgeStyle}">${row.estado}</span></td>
+                        <td class="px-6 py-4 whitespace-nowrap">${alertaHTML}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center"><button onclick="editarDesdeDashboard('${row.cedula}')" class="px-3 py-1.5 bg-slate-100 hover:bg-brand-cyan hover:text-white text-brand-blue font-bold text-[10px] uppercase rounded-lg transition-all shadow-sm">Editar</button></td>
+                    </tr>`;
             });
         }
     </script>
