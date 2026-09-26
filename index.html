@@ -1,18 +1,235 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXKBS057EN36CPOpa07SyojvGl6wWLVWmfNzKjzAbAD92RH_FtSZpYFpB5e2yvEwd-gg/exec';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Moderno | Panel de Gestión</title>
+    <!-- Fuentes modernas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: { blue: '#0033a0', cyan: '#00a1e0', dark: '#0f172a', light: '#f8fafc' }
+                    },
+                    boxShadow: { 'floating': '0 30px 60px -20px rgba(0,51,160,0.2)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0033a0 0%, #00a1e0 100%);
+            background-attachment: fixed;
+        }
+        .input-modern {
+            @apply w-full bg-slate-50 border-0 rounded-2xl px-5 py-3.5 text-gray-800 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:ring-2 focus:ring-brand-cyan focus:bg-white transition-all duration-300;
+        }
+        .label-modern {
+            @apply block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1;
+        }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen text-slate-800 p-4 md:p-8 flex items-center justify-center">
+
+    <div class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-floating overflow-hidden relative fade-in">
+        
+        <!-- Header / Pestañas -->
+        <div class="px-8 pt-8 pb-4 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center bg-white/50 backdrop-blur-xl sticky top-0 z-10 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-brand-dark tracking-tight">Registro</h1>
+                <p class="text-sm font-medium text-slate-400 mt-1">Gestión de potenciales clientes</p>
+            </div>
+            <div class="flex space-x-2 bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto">
+                <button onclick="switchTab('registro')" id="tab-registro" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-white text-brand-blue shadow-sm">
+                    Formulario
+                </button>
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="flex-1 md:flex-none px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-brand-blue">
+                    Dashboard
+                </button>
+            </div>
+        </div>
+
+        <!-- Alerta de Edición -->
+        <div id="alertaEdicion" class="hidden bg-brand-cyan/10 border-l-4 border-brand-cyan p-4 mx-8 mt-6 rounded-r-2xl">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 text-brand-cyan mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <p class="text-sm font-bold text-brand-blue">Modo Edición Activado.</p>
+                <button type="button" onclick="cancelarEdicion()" class="ml-auto text-xs font-bold text-slate-500 hover:text-brand-blue uppercase tracking-wider flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+
+        <!-- PESTAÑA REGISTRO -->
+        <div id="content-registro" class="p-8 fade-in">
+            <form id="leadForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="label-modern">ID Consulta</label>
+                        <input type="text" id="idConsulta" class="input-modern bg-slate-100 text-slate-400 font-medium" readonly>
+                    </div>
+                    <div>
+                        <label class="label-modern">Fecha Registro</label>
+                        <input type="date" id="fechaRegistro" class="input-modern bg-slate-100 text-slate-400 font-medium" readonly>
+                    </div>
+                    <div>
+                        <label class="label-modern text-brand-blue">Cédula *</label>
+                        <div class="relative">
+                            <input type="number" id="cedula" required class="input-modern pr-14" placeholder="Ej. 1058139461">
+                            <button type="button" onclick="buscarPorCedula()" class="absolute inset-y-1.5 right-1.5 bg-brand-blue hover:bg-brand-cyan text-white p-2 rounded-xl transition-colors shadow-md" title="Buscar y editar por cédula">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label-modern">Nombre Completo *</label>
+                    <input type="text" id="nombre" required class="input-modern" placeholder="Ej. Nicol Dahianna Ortíz Ramirez">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
+                    <div>
+                        <label class="label-modern">Número POPC *</label>
+                        <input type="text" id="numPOPC" required class="input-modern bg-white">
+                    </div>
+                    <div>
+                        <label class="label-modern">Puntaje CIFIN *</label>
+                        <input type="number" id="puntajeCIFIN" required class="input-modern bg-white">
+                    </div>
+                    <div>
+                        <label class="label-modern">Validación CIFIN *</label>
+                        <select id="validacionCIFIN" required class="input-modern bg-white">
+                            <option value="">Seleccionar...</option>
+                            <option value="Cumple">Cumple</option>
+                            <option value="No cumple">No cumple</option>
+                            <option value="Cumple con pendiente">Cumple con pendiente</option>
+                            <option value="PEPs">PEPs</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="label-modern">Empresa *</label>
+                        <select id="empresa" required class="input-modern">
+                            <option value="">Cargando empresas...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-modern">Sector *</label>
+                        <select id="sector" required class="input-modern">
+                            <option value="">Seleccionar...</option>
+                            <option value="Público">Público</option>
+                            <option value="Privado">Privado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label-modern">Teléfono *</label>
+                        <input type="number" id="telefono" required class="input-modern" placeholder="Ej. 3007358997">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="label-modern"># OPC *</label>
+                        <input type="text" id="numOPC" required class="input-modern">
+                    </div>
+                    <div>
+                        <label class="label-modern">Estado *</label>
+                        <select id="estado" required class="input-modern">
+                            <option value="">Seleccionar...</option>
+                            <option value="Recuperar">Recuperar</option>
+                            <option value="Radicado">Radicado</option>
+                            <option value="Reportado">Reportado</option>
+                            <option value="Sin capacidad">Sin capacidad</option>
+                            <option value="Pendiente por Radicar">Pendiente por Radicar</option>
+                        </select>
+                    </div>
+                    <div id="divRecuperacion" class="hidden">
+                        <label class="label-modern text-amber-500">Fecha Recuperación *</label>
+                        <input type="date" id="fechaRecuperacion" class="input-modern bg-amber-50 border border-amber-200">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label-modern">Notas Adicionales</label>
+                    <textarea id="notas" rows="3" class="input-modern resize-none" placeholder="Observaciones..."></textarea>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" id="btnSubmit" class="w-full bg-brand-dark hover:bg-brand-blue text-white font-bold text-lg py-4 rounded-2xl shadow-[0_10px_20px_-10px_rgba(0,51,160,0.5)] transition-all duration-300 flex justify-center items-center">
+                        <span id="btnText">Guardar Registro</span>
+                        <svg id="btnSpinner" class="hidden animate-spin ml-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    </button>
+                    <div id="formFeedback" class="mt-4 text-center text-sm font-semibold hidden rounded-xl py-3"></div>
+                </div>
+            </form>
+        </div>
+
+        <!-- PESTAÑA DASHBOARD -->
+        <div id="content-dashboard" class="hidden p-8 fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-slate-50 p-4 rounded-2xl">
+                <p class="text-sm font-semibold text-slate-500">Visualiza y edita los registros guardados.</p>
+                <div class="mt-4 md:mt-0 flex items-center bg-white p-1 rounded-xl shadow-sm">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mx-3">Filtrar</label>
+                    <select id="filtroEstado" onchange="renderizarTabla()" class="border-0 bg-transparent py-2 pl-2 pr-8 text-sm font-bold text-brand-dark focus:ring-0 cursor-pointer">
+                        <option value="Todos">Todos</option>
+                        <option value="Recuperar">Recuperar (Pendientes)</option>
+                        <option value="Radicado">Radicado</option>
+                        <option value="Reportado">Reportado</option>
+                        <option value="Pendiente por Radicar">Pendiente por Radicar</option>
+                        <option value="Sin capacidad">Sin capacidad</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-[2rem] border border-slate-100 shadow-sm">
+                <table class="min-w-full divide-y divide-slate-100">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">Cliente</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">Empresa</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">Estado</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">Alerta</th>
+                            <th class="px-6 py-4 text-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCuerpo" class="bg-white divide-y divide-slate-50">
+                        <tr><td colspan="5" class="px-6 py-12 text-center text-sm text-slate-400 font-medium">Cargando información...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ETIQUETA SCRIPT (VITAL) -->
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXKBS057EN36CPOpa07SyojvGl6wWLVWmfNzKjzAbAD92RH_FtSZpYFpB5e2yvEwd-gg/exec';
         let datosDashboard = [];
         let currentRowNumber = null;
 
         window.onload = () => {
-            // Ponemos la fecha y un texto de carga mientras consultamos el Sheets
             const today = new Date();
             today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
             document.getElementById('fechaRegistro').value = today.toISOString().slice(0, 10);
             document.getElementById('idConsulta').value = "Calculando ID...";
-            
             cargarDatosBackend();
         };
 
-        // NUEVA FUNCIÓN: Genera el ID leyendo directamente la base de datos
         function generarID(registrosExistentes) {
             const date = new Date();
             const prefix = date.getFullYear().toString() + String(date.getMonth() + 1).padStart(2, '0') + String(date.getDate()).padStart(2, '0');
@@ -53,7 +270,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXKBS057EN36CPOpa07
                     });
                 }
                 if(data.registros) {
-                    // Calculamos el nuevo ID con los datos reales antes de invertirlos
                     if(!currentRowNumber) {
                         document.getElementById('idConsulta').value = generarID(data.registros);
                     }
@@ -151,12 +367,10 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXKBS057EN36CPOpa07
             currentRowNumber = null;
             document.getElementById('leadForm').reset();
             
-            // Restaurar fecha
             const today = new Date();
             today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
             document.getElementById('fechaRegistro').value = today.toISOString().slice(0, 10);
             
-            // Recalcular ID con los datos que ya tenemos en memoria
             document.getElementById('idConsulta').value = generarID(datosDashboard);
             
             document.getElementById('divRecuperacion').classList.add('hidden');
@@ -207,7 +421,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXKBS057EN36CPOpa07
                     feedback.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 rounded-xl py-3 block fade-in";
                     
                     cancelarEdicion();
-                    cargarDatosBackend(); // Esto actualizará la tabla y generará el nuevo ID automáticamente
+                    cargarDatosBackend();
                 } else throw new Error("Error del servidor");
             } catch (error) {
                 feedback.textContent = "Error al guardar.";
@@ -270,3 +484,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXKBS057EN36CPOpa07
                 tbody.appendChild(tr);
             });
         }
+    </script>
+</body>
+</html>
